@@ -1,86 +1,166 @@
-import { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Center,
-  HStack,
-  Box,
-  Button,
+  Flex,
   Heading,
-  Image,
-  Link,
+  IconButton,
+  Spacer,
   Text,
+  VStack,
 } from "@chakra-ui/react";
-import type { ImageProps } from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import reactLogo from "./assets/react.svg";
+import { BiCalendar, BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import { Calender } from "./Calender";
 
-function App() {
-  const [count, setCount] = useState(0);
+export const App: React.FC = React.memo(() => {
+  // 現在日
+  const systemDate = useMemo(() => {
+    const date = new Date();
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      date: date.getDate(),
+    };
+  }, []);
 
-  const MotionImage = motion<Omit<ImageProps, "transition">>(Image);
+  // カレンダーの表示年月
+  const [displayYearMonth, setDisplayYearMonth] = useState<{
+    year: number;
+    month: number;
+  }>({ year: systemDate.year, month: systemDate.month });
+
+  // "<"ボタン押下時
+  const handleClickPreviousMonthButton = useCallback(() => {
+    // 表示月を前の月にする
+    setDisplayYearMonth((prevDisplayYearMonth) => {
+      return {
+        year:
+          prevDisplayYearMonth.month - 1 === 0
+            ? prevDisplayYearMonth.year - 1
+            : prevDisplayYearMonth.year,
+        month:
+          prevDisplayYearMonth.month - 1 === 0
+            ? 12
+            : prevDisplayYearMonth.month - 1,
+      };
+    });
+  }, []);
+
+  // ">"ボタン押下時
+  const handleClickNextMonthButton = useCallback(() => {
+    // 表示月を次の月にする
+    setDisplayYearMonth((prevDisplayYearMonth) => {
+      return {
+        year:
+          prevDisplayYearMonth.month + 1 === 13
+            ? prevDisplayYearMonth.year + 1
+            : prevDisplayYearMonth.year,
+        month:
+          prevDisplayYearMonth.month + 1 === 13
+            ? 1
+            : prevDisplayYearMonth.month + 1,
+      };
+    });
+  }, []);
+
   return (
     <Center
       sx={{
         width: "100vw",
-        height: "100vh",
         margin: "0 auto",
         padding: "2rem",
-        textAlign: "center",
       }}
     >
-      <Box>
-        <HStack justify="center">
-          <Link
-            as="a"
-            href="https://vitejs.dev"
-            target="_blank"
-            rel="noreferrer"
+      <VStack
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Flex
+          sx={{
+            width: "100%",
+            height: "36px",
+            padding: "0 24px",
+          }}
+        >
+          <Heading
+            as="h1"
+            sx={{
+              fontSize: "24px",
+              fontWeight: "normal",
+            }}
           >
-            <Image
-              src="/vite.svg"
-              p={6}
-              sx={{ willChange: "filter", height: "6em" }}
-              _hover={{ filter: "drop-shadow(0 0 2em #646cffaa)" }}
-              alt="Vite logo"
-              m={0}
-            />
-          </Link>
-          <Link
-            as="a"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <MotionImage
-              as={motion.img}
-              animate={{ transform: ["rotate(0deg)", "rotate(360deg)"] }}
-              transition={{
-                repeat: Infinity,
-                duration: 20,
-                ease: "linear",
+            <BiCalendar
+              color="#57ab65"
+              style={{
+                display: "inline-block",
+                verticalAlign: "middle",
+                width: "36px",
+                height: "36px",
               }}
-              src={reactLogo}
-              p={6}
-              sx={{ willChange: "filter", height: "6em" }}
-              _hover={{ filter: "drop-shadow(0 0 2em #646cffaa)" }}
-              alt="React logo"
             />
-          </Link>
-        </HStack>
-        <Heading as="h1">Vite + React</Heading>
-        <Box p={8}>
-          <Button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </Button>
-          <Text>
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </Text>
-        </Box>
-        <Text sx={{ color: "#888" }}>
-          Click on the Vite and React logos to learn more
-        </Text>
-      </Box>
+            <Text
+              sx={{
+                display: "inline-block",
+                verticalAlign: "middle",
+                fontSize: "24px",
+                fontWeight: "normal",
+              }}
+            >
+              カレンダー
+            </Text>
+          </Heading>
+          <Spacer />
+          <Heading
+            as="h2"
+            sx={{
+              fontSize: "24px",
+              fontWeight: "normal",
+            }}
+          >
+            <IconButton
+              aria-label="<"
+              icon={
+                <BiChevronLeft
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                  }}
+                />
+              }
+              onClick={handleClickPreviousMonthButton}
+              sx={{
+                backgroundColor: "#fff",
+              }}
+            />
+            <Text
+              sx={{
+                display: "inline-block",
+                verticalAlign: "middle",
+                fontSize: "24px",
+                fontWeight: "normal",
+              }}
+            >
+              {`${displayYearMonth.year}年${displayYearMonth.month}月`}
+            </Text>
+            <IconButton
+              aria-label=">"
+              icon={
+                <BiChevronRight
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                  }}
+                />
+              }
+              onClick={handleClickNextMonthButton}
+              sx={{
+                backgroundColor: "#fff",
+              }}
+            />
+          </Heading>
+        </Flex>
+        <Calender systemDate={systemDate} displayYearMonth={displayYearMonth} />
+      </VStack>
     </Center>
   );
-}
-
-export default App;
+});
