@@ -1,6 +1,10 @@
+/**
+ * カレンダー - 月
+ */
 import React, { useMemo } from "react";
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { DateCell } from "./DateCell";
+import type { Schedule } from "~/App";
 
 type Props = {
   systemDate: {
@@ -12,10 +16,13 @@ type Props = {
     year: number;
     month: number;
   };
+  scheduleList: Schedule[];
+  // 予定の追加処理
+  addSchedule: (newSchedule: Omit<Schedule, "id">) => void;
 };
 
 export const Calender: React.FC<Props> = React.memo(
-  ({ systemDate, displayYearMonth }) => {
+  ({ systemDate, displayYearMonth, scheduleList, addSchedule }) => {
     // 1日の曜日インデックス(日：0, 月:1, ..., 土:6)
     const firstDayIndex = useMemo(() => {
       const date = new Date(
@@ -166,6 +173,7 @@ export const Calender: React.FC<Props> = React.memo(
                     <Td
                       key={`${weekIndex}-${dateIndex}`}
                       sx={{
+                        width: "100px",
                         height: "120px",
                         padding: "0px",
                         border: "1px solid #aab5c1",
@@ -175,12 +183,22 @@ export const Calender: React.FC<Props> = React.memo(
                     >
                       {date ? (
                         <DateCell
-                          date={date}
+                          date={{
+                            year: displayYearMonth.year,
+                            month: displayYearMonth.month,
+                            date: date,
+                          }}
                           isToday={
                             systemDate.year === displayYearMonth.year &&
                             systemDate.month === displayYearMonth.month &&
                             systemDate.date === date
                           }
+                          scheduleList={scheduleList.filter((schedule) => {
+                            return schedule.date.endsWith(
+                              `00${date}`.slice(-2) // 日は2桁にするために頭を0埋め
+                            );
+                          })}
+                          addSchedule={addSchedule}
                         />
                       ) : null}
                     </Td>
