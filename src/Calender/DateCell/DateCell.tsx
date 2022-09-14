@@ -5,6 +5,7 @@ import React from "react";
 import { Box, Text, useDisclosure, Button, VStack } from "@chakra-ui/react";
 import type { Schedule } from "~/App";
 import { InputSchedulePopover } from "./InputSchedulePopover";
+import { ScheduleButton } from "./ScheduleButton";
 
 type Props = {
   date: {
@@ -16,10 +17,21 @@ type Props = {
   scheduleList: Schedule[];
   // 予定の追加処理
   addSchedule: (newSchedule: Omit<Schedule, "id">) => void;
+  // 予定の削除処理
+  deleateSchedule: (targetId: number) => void;
+  // 予定の更新処理
+  updateSchedule: (newSchedule: Schedule) => void;
 };
 
 export const DateCell: React.FC<Props> = React.memo(
-  ({ date, isToday, scheduleList, addSchedule }) => {
+  ({
+    date,
+    isToday,
+    scheduleList,
+    addSchedule,
+    deleateSchedule,
+    updateSchedule,
+  }) => {
     // 予定作成ポップオーバーの表示状態
     const {
       isOpen: isOpenAddSchedulePopover,
@@ -94,28 +106,12 @@ export const DateCell: React.FC<Props> = React.memo(
           {/* 登録済み予定一覧 */}
           {scheduleList.map((schedule) => {
             return (
-              <Button
+              <ScheduleButton
                 key={schedule.id}
-                onClick={() => <></>}
-                sx={{
-                  display: "block",
-                  width: "100%",
-                  height: "24px",
-                  padding: "2px 4px",
-                  backgroundColor: "#94d4a8",
-                }}
-              >
-                <Text
-                  sx={{
-                    textAlign: "left",
-                    fontWeight: "normal",
-                    fontSize: "16px",
-                    color: "#fff",
-                  }}
-                >
-                  {schedule.title}
-                </Text>
-              </Button>
+                schedule={schedule}
+                deleateSchedule={deleateSchedule}
+                updateSchedule={updateSchedule}
+              />
             );
           })}
         </VStack>

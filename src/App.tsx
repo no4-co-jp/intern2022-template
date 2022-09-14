@@ -83,7 +83,7 @@ export const App: React.FC = React.memo(() => {
       date: "2022-09-11",
       startTime: "",
       endTime: "",
-      memo: "",
+      memo: "テストテストテストテストテストテストテストテストテストテストテストテストテスト",
     },
     {
       id: 2,
@@ -264,6 +264,8 @@ export const App: React.FC = React.memo(() => {
             return schedule.date.startsWith(`${year}-${month}`);
           })}
           addSchedule={addSchedule}
+          deleateSchedule={deleateSchedule}
+          updateSchedule={updateSchedule}
         />
       </VStack>
     </Center>
