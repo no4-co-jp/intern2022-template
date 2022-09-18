@@ -33,6 +33,8 @@ type Props = {
   onClose: () => void;
   children: React.ReactNode; // PopoverTrigger内の要素
   schedule: Schedule;
+  // 編集ボタン押下時
+  onClickEditBitton: () => void;
   // 予定の削除処理
   deleateSchedule: (targetId: number) => void;
   // 予定の更新処理
@@ -45,6 +47,7 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
     onClose,
     children,
     schedule,
+    onClickEditBitton,
     deleateSchedule,
     updateSchedule,
   }) => {
@@ -81,8 +84,8 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
 
     // 編集ボタン押下時
     const handleClickEditButton = useCallback(() => {
-      return;
-    }, []);
+      onClickEditBitton();
+    }, [onClickEditBitton]);
 
     // 削除ボタン押下時
     const handleClickDeleateButton = useCallback(() => {

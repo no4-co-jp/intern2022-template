@@ -1,10 +1,11 @@
 /**
  * 登録済み予定ボタン
  */
-import React from "react";
+import React, { useCallback } from "react";
 import { Text, useDisclosure, Button } from "@chakra-ui/react";
 import type { Schedule } from "~/App";
 import { ScheduleDetailPopover } from "./ScheduleDetailPopover";
+import { InputSchedulePopover } from "../InputSchedulePopover";
 
 type Props = {
   schedule: Schedule;
@@ -23,38 +24,101 @@ export const ScheduleButton: React.FC<Props> = React.memo(
       onClose: closeScheduleDetailPopover,
     } = useDisclosure();
 
+    // 予定編集ポップオーバーの表示状態
+    const {
+      isOpen: isOpenEditSchedulePopover,
+      onOpen: openEditSchedulePopover,
+      onClose: closeEditSchedulePopover,
+    } = useDisclosure();
+
+    // 予定詳細ポップオーバー - 編集ボタン押下時
+    const handleClickEditButton = useCallback(() => {
+      // 予定詳細ポップオーバーを閉じる
+      closeScheduleDetailPopover();
+
+      // 予定編集ポップオーバーを開く
+      openEditSchedulePopover();
+    }, [closeScheduleDetailPopover, openEditSchedulePopover]);
+
+    // 予定編集ポップオーバー - 閉じるボタン押下時
+    const handleCloseEditSchedulePopover = useCallback(() => {
+      // 予定編集ポップオーバーを閉じる
+      closeEditSchedulePopover();
+
+      // 予定詳細ポップオーバーを開く
+      openScheduleDetailPopover();
+    }, [closeEditSchedulePopover, openScheduleDetailPopover]);
+
     return (
-      // 予定作成ポップオーバー
-      <ScheduleDetailPopover
-        key={schedule.id}
-        isOpen={isOpenScheduleDetailPopover}
-        onClose={closeScheduleDetailPopover}
-        schedule={schedule}
-        deleateSchedule={deleateSchedule}
-        updateSchedule={updateSchedule}
-      >
-        <Button
-          onClick={openScheduleDetailPopover}
-          sx={{
-            display: "block",
-            width: "100%",
-            height: "24px",
-            padding: "2px 4px",
-            backgroundColor: "#94d4a8",
-          }}
-        >
-          <Text
-            sx={{
-              textAlign: "left",
-              fontWeight: "normal",
-              fontSize: "16px",
-              color: "#fff",
-            }}
+      <>
+        {!isOpenEditSchedulePopover ? (
+          // 予定詳細ポップオーバー
+          <ScheduleDetailPopover
+            key={schedule.id}
+            isOpen={isOpenScheduleDetailPopover}
+            onClose={closeScheduleDetailPopover}
+            schedule={schedule}
+            onClickEditBitton={handleClickEditButton}
+            deleateSchedule={deleateSchedule}
+            updateSchedule={updateSchedule}
           >
-            {schedule.title}
-          </Text>
-        </Button>
-      </ScheduleDetailPopover>
+            <Button
+              onClick={openScheduleDetailPopover}
+              sx={{
+                display: "block",
+                width: "100%",
+                height: "24px",
+                padding: "2px 4px",
+                backgroundColor: "#94d4a8",
+              }}
+            >
+              <Text
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "normal",
+                  fontSize: "16px",
+                  color: "#fff",
+                }}
+              >
+                {schedule.title}
+              </Text>
+            </Button>
+          </ScheduleDetailPopover>
+        ) : null}
+
+        {isOpenEditSchedulePopover ? (
+          // 予定編集ポップオーバー
+          <InputSchedulePopover
+            key={schedule.id}
+            isOpen={isOpenEditSchedulePopover}
+            onClose={handleCloseEditSchedulePopover}
+            schedule={schedule}
+            deleateSchedule={deleateSchedule}
+            updateSchedule={updateSchedule}
+          >
+            <Button
+              sx={{
+                display: "block",
+                width: "100%",
+                height: "24px",
+                padding: "2px 4px",
+                backgroundColor: "#94d4a8",
+              }}
+            >
+              <Text
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "normal",
+                  fontSize: "16px",
+                  color: "#fff",
+                }}
+              >
+                {schedule.title}
+              </Text>
+            </Button>
+          </InputSchedulePopover>
+        ) : null}
+      </>
     );
   }
 );

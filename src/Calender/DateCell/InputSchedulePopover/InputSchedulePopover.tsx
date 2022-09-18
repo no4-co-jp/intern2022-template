@@ -26,7 +26,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode; // PopoverTrigger内の要素
-  popoverOpenDate: {
+  popoverOpenDate?: {
     // 呼び出し元の日付
     year: number;
     month: number;
@@ -64,11 +64,11 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     const [date, setDate] = useState<string>(
       schedule
         ? schedule.date
-        : `0000${popoverOpenDate.year}`.slice(-4) +
+        : `0000${popoverOpenDate?.year ?? ""}`.slice(-4) +
             "-" +
-            `00${popoverOpenDate.month}`.slice(-2) +
+            `00${popoverOpenDate?.month ?? ""}`.slice(-2) +
             "-" +
-            `00${popoverOpenDate.date}`.slice(-2)
+            `00${popoverOpenDate?.date ?? ""}`.slice(-2)
     );
 
     // 開始時刻 hh:MM形式
@@ -124,22 +124,25 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
 
     // 閉じるボタン押下時
     const handleClickCloseButton = useCallback(() => {
-      // 入力欄の初期化
-      setTitle("");
-      setDate(
-        `0000${popoverOpenDate.year}`.slice(-4) +
-          "-" +
-          `00${popoverOpenDate.month}`.slice(-2) +
-          "-" +
-          `00${popoverOpenDate.date}`.slice(-2)
-      );
-      setStartTime("");
-      setEndTime("");
-      setMemo("");
+      // 新規作成時
+      if (!schedule) {
+        // 入力欄の初期化
+        setTitle("");
+        setDate(
+          `0000${popoverOpenDate?.year ?? ""}`.slice(-4) +
+            "-" +
+            `00${popoverOpenDate?.month ?? ""}`.slice(-2) +
+            "-" +
+            `00${popoverOpenDate?.date ?? ""}`.slice(-2)
+        );
+        setStartTime("");
+        setEndTime("");
+        setMemo("");
+      }
 
       // ポップオーバーを閉じる
       onClose();
-    }, [onClose, popoverOpenDate]);
+    }, [onClose, popoverOpenDate, schedule]);
 
     // 保存ボタン押下時
     const handleClickSaveButton = useCallback(() => {
