@@ -69,6 +69,7 @@ export const ScheduleButton: React.FC<Props> = React.memo(
                 width: "100%",
                 height: "24px",
                 padding: "2px 4px",
+                borderRadius: "4px",
                 backgroundColor: "#94d4a8",
               }}
             >
@@ -96,26 +97,21 @@ export const ScheduleButton: React.FC<Props> = React.memo(
             deleateSchedule={deleateSchedule}
             updateSchedule={updateSchedule}
           >
-            <Button
+            <Text
               sx={{
-                display: "block",
                 width: "100%",
                 height: "24px",
                 padding: "2px 4px",
+                textAlign: "left",
+                borderRadius: "4px",
                 backgroundColor: "#94d4a8",
+                fontWeight: "normal",
+                fontSize: "16px",
+                color: "#fff",
               }}
             >
-              <Text
-                sx={{
-                  textAlign: "left",
-                  fontWeight: "normal",
-                  fontSize: "16px",
-                  color: "#fff",
-                }}
-              >
-                {schedule.title}
-              </Text>
-            </Button>
+              {schedule.title}
+            </Text>
           </InputSchedulePopover>
         ) : null}
       </>

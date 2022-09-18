@@ -1,7 +1,7 @@
 /**
  * カレンダーアプリ
  */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Center,
   Flex,
@@ -79,7 +79,7 @@ export const App: React.FC = React.memo(() => {
   const [scheduleList, setScheduleList] = useState<Schedule[]>([
     {
       id: 1,
-      title: "予定",
+      title: "予定1",
       date: "2022-09-11",
       startTime: "",
       endTime: "",
@@ -105,6 +105,22 @@ export const App: React.FC = React.memo(() => {
       id: 4,
       title: "予定4",
       date: "2022-09-11",
+      startTime: "",
+      endTime: "",
+      memo: "",
+    },
+    {
+      id: 5,
+      title: "予定5",
+      date: "2022-09-12",
+      startTime: "",
+      endTime: "",
+      memo: "",
+    },
+    {
+      id: 6,
+      title: "予定6",
+      date: "2022-09-12",
       startTime: "",
       endTime: "",
       memo: "",
