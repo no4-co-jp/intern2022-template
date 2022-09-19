@@ -18,9 +18,11 @@ import {
   IconButton,
   Flex,
   Spacer,
+  useDisclosure,
 } from "@chakra-ui/react";
 import type { Schedule } from "~/App";
 import { BiSave, BiTrash, BiX } from "react-icons/bi";
+import { ConfirmModal } from "~/Common/ConfirmModal";
 
 type Props = {
   isOpen: boolean;
@@ -82,6 +84,18 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     // メモ
     const [memo, setMemo] = useState<string>(schedule?.memo ?? "");
 
+    // 入力内容破棄/編集内容破棄/削除確認モーダルの表示状態
+    const {
+      isOpen: isOpenConfirmModal,
+      onOpen: openConfirmModal,
+      onClose: closeConfirmModal,
+    } = useDisclosure();
+
+    // 入力内容破棄/編集内容破棄/削除確認モーダルのopen時トリガ
+    const [confirmModalOpenTrigger, setConfirmModalOpenTrigger] = useState<
+      "closeButton" | "deleateButton"
+    >("closeButton");
+
     // タイトル編集時
     const handleChangeTitle = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,25 +138,10 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
 
     // 閉じるボタン押下時
     const handleClickCloseButton = useCallback(() => {
-      // 新規作成時
-      if (!schedule) {
-        // 入力欄の初期化
-        setTitle("");
-        setDate(
-          `0000${popoverOpenDate?.year ?? ""}`.slice(-4) +
-            "-" +
-            `00${popoverOpenDate?.month ?? ""}`.slice(-2) +
-            "-" +
-            `00${popoverOpenDate?.date ?? ""}`.slice(-2)
-        );
-        setStartTime("");
-        setEndTime("");
-        setMemo("");
-      }
-
-      // ポップオーバーを閉じる
-      onClose();
-    }, [onClose, popoverOpenDate, schedule]);
+      // 入力内容破棄/編集内容破棄モーダルを開く
+      setConfirmModalOpenTrigger("closeButton");
+      openConfirmModal();
+    }, [openConfirmModal]);
 
     // 保存ボタン押下時
     const handleClickSaveButton = useCallback(() => {
@@ -159,13 +158,14 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
         endTime: endTime,
         memo: memo,
       });
+
       // ポップオーバーを閉じる
-      handleClickCloseButton();
+      onClose();
     }, [
       date,
       endTime,
-      handleClickCloseButton,
       memo,
+      onClose,
       schedule,
       startTime,
       title,
@@ -174,15 +174,10 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
 
     // 削除ボタン押下時
     const handleClickDeleateButton = useCallback(() => {
-      if (!deleateSchedule || !schedule) {
-        return;
-      }
-
-      // 予定を削除
-      deleateSchedule(schedule.id);
-      // ポップオーバーを閉じる
-      handleClickCloseButton();
-    }, [deleateSchedule, handleClickCloseButton, schedule]);
+      // 削除確認モーダルを開く
+      setConfirmModalOpenTrigger("deleateButton");
+      openConfirmModal();
+    }, [openConfirmModal]);
 
     // ポップオーバー領域外クリック時
     const handleClickOutsidePopover = useCallback(() => {
@@ -200,11 +195,12 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
           endTime: endTime,
           memo: memo,
         });
+
         // ポップオーバーを閉じる
-        handleClickCloseButton();
+        onClose();
       } else {
         // 編集時
-        // ポップオーバーを閉じる
+        // 閉じるボタン押下と同じ判定
         handleClickCloseButton();
       }
     }, [
@@ -214,9 +210,42 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
       handleClickCloseButton,
       isAddNewSchedule,
       memo,
+      onClose,
       startTime,
       title,
     ]);
+
+    // 入力内容破棄/編集内容破棄/削除確認モーダルのclose時
+    const handleCloseConfirmModal = useCallback(
+      (isOk: boolean) => {
+        // 入力内容破棄/編集内容破棄/削除確認モーダルを閉じる
+        closeConfirmModal();
+
+        if (!isOk) {
+          // キャンセルボタン押下時
+          return;
+        }
+
+        if (!isAddNewSchedule && confirmModalOpenTrigger === "deleateButton") {
+          // 編集 - 削除ボタン押下時
+          // 予定を削除
+          if (deleateSchedule && schedule) {
+            deleateSchedule(schedule.id);
+          }
+        }
+
+        // ポップオーバーを閉じる
+        onClose();
+      },
+      [
+        closeConfirmModal,
+        confirmModalOpenTrigger,
+        deleateSchedule,
+        isAddNewSchedule,
+        onClose,
+        schedule,
+      ]
+    );
 
     return (
       <>
@@ -424,6 +453,28 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
             }}
           />
         ) : null}
+
+        {/**
+         * 入力内容破棄/編集内容破棄/削除確認モーダル
+         */}
+        <ConfirmModal
+          isOpen={isOpenConfirmModal}
+          onClose={handleCloseConfirmModal}
+          message={
+            isAddNewSchedule // 新規作成 - 閉じるボタン押下時
+              ? "入力内容を破棄しますか"
+              : confirmModalOpenTrigger === "closeButton" // 編集 - 閉じるボタン・領域外押下時
+              ? "編集内容を破棄しますか"
+              : "本当に削除しますか" // 編集 - 削除ボタン押下時
+          }
+          positiveButtonLabel={
+            isAddNewSchedule // 新規作成 - 閉じるボタン押下時
+              ? "破棄"
+              : confirmModalOpenTrigger === "closeButton" // 編集 - 閉じるボタン・領域外押下時
+              ? "破棄"
+              : "削除" // 編集 - 削除ボタン押下時
+          }
+        />
       </>
     );
   }

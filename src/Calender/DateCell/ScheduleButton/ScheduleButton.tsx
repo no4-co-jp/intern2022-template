@@ -60,7 +60,6 @@ export const ScheduleButton: React.FC<Props> = React.memo(
             schedule={schedule}
             onClickEditBitton={handleClickEditButton}
             deleateSchedule={deleateSchedule}
-            updateSchedule={updateSchedule}
           >
             <Button
               onClick={openScheduleDetailPopover}
@@ -85,9 +84,7 @@ export const ScheduleButton: React.FC<Props> = React.memo(
               </Text>
             </Button>
           </ScheduleDetailPopover>
-        ) : null}
-
-        {isOpenEditSchedulePopover ? (
+        ) : (
           // 予定編集ポップオーバー
           <InputSchedulePopover
             key={schedule.id}
@@ -113,7 +110,7 @@ export const ScheduleButton: React.FC<Props> = React.memo(
               {schedule.title}
             </Text>
           </InputSchedulePopover>
-        ) : null}
+        )}
       </>
     );
   }

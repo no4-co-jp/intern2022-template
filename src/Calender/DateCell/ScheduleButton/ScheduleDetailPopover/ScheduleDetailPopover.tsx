@@ -16,6 +16,7 @@ import {
   Flex,
   Spacer,
   VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import type { Schedule } from "~/App";
 import {
@@ -27,6 +28,7 @@ import {
   BiTrash,
   BiX,
 } from "react-icons/bi";
+import { ConfirmModal } from "~/Common/ConfirmModal";
 
 type Props = {
   isOpen: boolean;
@@ -37,8 +39,6 @@ type Props = {
   onClickEditBitton: () => void;
   // 予定の削除処理
   deleateSchedule: (targetId: number) => void;
-  // 予定の更新処理
-  updateSchedule: (newSchedule: Schedule) => void;
 };
 
 export const ScheduleDetailPopover: React.FC<Props> = React.memo(
@@ -49,7 +49,6 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
     schedule,
     onClickEditBitton,
     deleateSchedule,
-    updateSchedule,
   }) => {
     // タイトル
     const title = useMemo(() => {
@@ -76,6 +75,13 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
       return schedule.memo;
     }, [schedule]);
 
+    // 削除確認モーダルの表示状態
+    const {
+      isOpen: isOpenConfirmModal,
+      onOpen: openConfirmModal,
+      onClose: closeConfirmModal,
+    } = useDisclosure();
+
     // 閉じるボタン押下時
     const handleClickCloseButton = useCallback(() => {
       // ポップオーバーを閉じる
@@ -89,17 +95,35 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
 
     // 削除ボタン押下時
     const handleClickDeleateButton = useCallback(() => {
-      // 予定を削除
-      deleateSchedule(schedule.id);
-      // ポップオーバーを閉じる
-      handleClickCloseButton();
-    }, [deleateSchedule, handleClickCloseButton, schedule]);
+      // 削除確認モーダルを開く
+      openConfirmModal();
+    }, [openConfirmModal]);
 
     // ポップオーバー領域外クリック時
     const handleClickOutsidePopover = useCallback(() => {
       // ポップオーバーを閉じる
       handleClickCloseButton();
     }, [handleClickCloseButton]);
+
+    // 削除確認モーダルのclose時
+    const handleCloseConfirmModal = useCallback(
+      (isOk: boolean) => {
+        // 削除確認モーダルを閉じる
+        closeConfirmModal();
+
+        if (!isOk) {
+          // キャンセルボタン押下時
+          return;
+        }
+
+        // 予定を削除
+        deleateSchedule(schedule.id);
+
+        // ポップオーバーを閉じる
+        handleClickCloseButton();
+      },
+      [closeConfirmModal, deleateSchedule, handleClickCloseButton, schedule]
+    );
 
     return (
       <>
@@ -322,6 +346,16 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
             }}
           />
         ) : null}
+
+        {/**
+         * 削除確認モーダル
+         */}
+        <ConfirmModal
+          isOpen={isOpenConfirmModal}
+          onClose={handleCloseConfirmModal}
+          message="本当に削除しますか"
+          positiveButtonLabel="削除"
+        />
       </>
     );
   }
