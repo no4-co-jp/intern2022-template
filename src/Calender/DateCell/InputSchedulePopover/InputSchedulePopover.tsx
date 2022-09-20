@@ -19,6 +19,7 @@ import {
   Flex,
   Spacer,
   useDisclosure,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import type { Schedule } from "~/App";
 import { BiSave, BiTrash, BiX } from "react-icons/bi";
@@ -62,6 +63,13 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     // タイトル
     const [title, setTitle] = useState<string>(schedule?.title ?? "");
 
+    // タイトルの入力値が無効か
+    const [isInvalidTitle, setIsInvalidTitle] = useState<
+      | "required" // 入力必須
+      | "tooLong" // 最大文字数10文字
+      | null
+    >(null);
+
     // 日付 yyyy-mm-dd形式
     const [date, setDate] = useState<string>(
       schedule
@@ -72,6 +80,12 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
             "-" +
             `00${popoverOpenDate?.date ?? ""}`.slice(-2)
     );
+
+    // 日付の入力値が無効か
+    const [isInvalidDate, setIsInvalidDate] = useState<
+      | "invalid" // 不正な値
+      | null
+    >(null);
 
     // 開始時刻 hh:MM形式
     const [startTime, setStartTime] = useState<string>(
@@ -93,7 +107,8 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
 
     // 入力内容破棄/編集内容破棄/削除確認モーダルのopen時トリガ
     const [confirmModalOpenTrigger, setConfirmModalOpenTrigger] = useState<
-      "closeButton" | "deleateButton"
+      | "closeButton" // 閉じるボタン押下
+      | "deleateButton" // 削除ボタン押下
     >("closeButton");
 
     // タイトル編集時
@@ -145,7 +160,22 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
 
     // 保存ボタン押下時
     const handleClickSaveButton = useCallback(() => {
-      if (!updateSchedule || !schedule || title === "" || date === "") {
+      if (!updateSchedule || !schedule) {
+        return;
+      }
+
+      // バリデーション
+      setIsInvalidTitle(null);
+      setIsInvalidDate(null);
+      if (title === "") {
+        setIsInvalidTitle("required"); // 入力必須
+        return;
+      } else if (title.length > 10) {
+        setIsInvalidTitle("tooLong"); // 最大文字数10文字
+        return;
+      }
+      if (date === "") {
+        setIsInvalidDate("invalid"); // 不正な値
         return;
       }
 
@@ -183,7 +213,22 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     const handleClickOutsidePopover = useCallback(() => {
       if (isAddNewSchedule) {
         // 新規作成時
-        if (!addSchedule || title === "" || date === "") {
+        if (!addSchedule) {
+          return;
+        }
+
+        // バリデーション
+        setIsInvalidTitle(null);
+        setIsInvalidDate(null);
+        if (title === "") {
+          setIsInvalidTitle("required"); // 入力必須
+          return;
+        } else if (title.length > 10) {
+          setIsInvalidTitle("tooLong"); // 最大文字数10文字
+          return;
+        }
+        if (date === "") {
+          setIsInvalidDate("invalid"); // 不正な値
           return;
         }
 
@@ -359,16 +404,26 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
 
             <PopoverBody>
               {/* タイトル */}
-              <FormControl>
+              <FormControl isInvalid={!!isInvalidTitle}>
                 <Input
                   type="text"
                   value={title}
                   placeholder="タイトルを入力"
                   onChange={handleChangeTitle}
                 />
+                {isInvalidTitle === "required" ? (
+                  <FormErrorMessage>
+                    タイトルを入力してください
+                  </FormErrorMessage>
+                ) : isInvalidTitle === "tooLong" ? (
+                  <FormErrorMessage>
+                    10文字以下で入力してください
+                  </FormErrorMessage>
+                ) : null}
               </FormControl>
               {/* 日時 */}
               <FormControl
+                isInvalid={!!isInvalidDate}
                 sx={{
                   width: "200px",
                   paddingTop: "8px",
@@ -380,6 +435,11 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
                   placeholder="年/月/日"
                   onChange={handleChangeDate}
                 />
+                {isInvalidDate === "invalid" ? (
+                  <FormErrorMessage>
+                    正しい日付を入力してください
+                  </FormErrorMessage>
+                ) : null}
               </FormControl>
               <HStack
                 sx={{
