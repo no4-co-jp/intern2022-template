@@ -38,11 +38,11 @@ type Props = {
   };
   schedule: Schedule | null;
   // 予定の追加処理
-  addSchedule?: (newSchedule: Omit<Schedule, "id">) => void;
+  onRequestAddSchedule?: (newSchedule: Omit<Schedule, "id">) => void;
   // 予定の削除処理
-  deleateSchedule?: (targetId: number) => void;
+  onRequestDeleateSchedule?: (targetId: number) => void;
   // 予定の更新処理
-  updateSchedule?: (newSchedule: Schedule) => void;
+  onRequestUpdateSchedule?: (newSchedule: Schedule) => void;
 };
 
 export const InputSchedulePopover: React.FC<Props> = memo(
@@ -52,9 +52,9 @@ export const InputSchedulePopover: React.FC<Props> = memo(
     children,
     popoverOpenDate,
     schedule,
-    addSchedule,
-    deleateSchedule,
-    updateSchedule,
+    onRequestAddSchedule,
+    onRequestDeleateSchedule,
+    onRequestUpdateSchedule,
   }) => {
     // 新規作成か
     const isAddNewSchedule = useMemo<boolean>(() => {
@@ -156,7 +156,7 @@ export const InputSchedulePopover: React.FC<Props> = memo(
 
     // 保存ボタン押下時
     const handleClickSaveButton = useCallback<() => void>(() => {
-      if (!updateSchedule || !schedule) {
+      if (!onRequestUpdateSchedule || !schedule) {
         return;
       }
 
@@ -176,7 +176,7 @@ export const InputSchedulePopover: React.FC<Props> = memo(
       }
 
       // 予定を更新
-      updateSchedule({
+      onRequestUpdateSchedule({
         id: schedule.id,
         title: title,
         date: date,
@@ -192,10 +192,10 @@ export const InputSchedulePopover: React.FC<Props> = memo(
       endTime,
       memo,
       onClose,
+      onRequestUpdateSchedule,
       schedule,
       startTime,
       title,
-      updateSchedule,
     ]);
 
     // 削除ボタン押下時
@@ -209,7 +209,7 @@ export const InputSchedulePopover: React.FC<Props> = memo(
     const handleClickOutsidePopover = useCallback<() => void>(() => {
       if (isAddNewSchedule) {
         // 新規作成時
-        if (!addSchedule) {
+        if (!onRequestAddSchedule) {
           return;
         }
 
@@ -229,7 +229,7 @@ export const InputSchedulePopover: React.FC<Props> = memo(
         }
 
         // 予定を追加
-        addSchedule({
+        onRequestAddSchedule({
           title: title,
           date: date,
           startTime: startTime,
@@ -245,13 +245,13 @@ export const InputSchedulePopover: React.FC<Props> = memo(
         handleClickCloseButton();
       }
     }, [
-      addSchedule,
       date,
       endTime,
       handleClickCloseButton,
       isAddNewSchedule,
       memo,
       onClose,
+      onRequestAddSchedule,
       startTime,
       title,
     ]);
@@ -270,8 +270,8 @@ export const InputSchedulePopover: React.FC<Props> = memo(
         if (!isAddNewSchedule && confirmModalOpenTrigger === "deleateButton") {
           // 編集 - 削除ボタン押下時
           // 予定を削除
-          if (deleateSchedule && schedule) {
-            deleateSchedule(schedule.id);
+          if (onRequestDeleateSchedule && schedule) {
+            onRequestDeleateSchedule(schedule.id);
           }
         }
 
@@ -281,9 +281,9 @@ export const InputSchedulePopover: React.FC<Props> = memo(
       [
         closeConfirmModal,
         confirmModalOpenTrigger,
-        deleateSchedule,
         isAddNewSchedule,
         onClose,
+        onRequestDeleateSchedule,
         schedule,
       ]
     );

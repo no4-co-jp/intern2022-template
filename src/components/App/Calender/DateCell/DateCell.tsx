@@ -24,11 +24,11 @@ type Props = {
   isToday: boolean; // 現在日か
   scheduleList: Schedule[];
   // 予定の追加処理
-  addSchedule: (newSchedule: Omit<Schedule, "id">) => void;
+  onRequestAddSchedule: (newSchedule: Omit<Schedule, "id">) => void;
   // 予定の削除処理
-  deleateSchedule: (targetId: number) => void;
+  onRequestDeleateSchedule: (targetId: number) => void;
   // 予定の更新処理
-  updateSchedule: (newSchedule: Schedule) => void;
+  onRequestUpdateSchedule: (newSchedule: Schedule) => void;
 };
 
 export const DateCell: React.FC<Props> = memo(
@@ -36,9 +36,9 @@ export const DateCell: React.FC<Props> = memo(
     date,
     isToday,
     scheduleList,
-    addSchedule,
-    deleateSchedule,
-    updateSchedule,
+    onRequestAddSchedule,
+    onRequestDeleateSchedule,
+    onRequestUpdateSchedule,
   }) => {
     // 予定作成ポップオーバーの表示状態
     const {
@@ -105,8 +105,8 @@ export const DateCell: React.FC<Props> = memo(
                   <ScheduleButton
                     key={schedule.id}
                     schedule={schedule}
-                    deleateSchedule={deleateSchedule}
-                    updateSchedule={updateSchedule}
+                    onRequestDeleateSchedule={onRequestDeleateSchedule}
+                    onRequestUpdateSchedule={onRequestUpdateSchedule}
                   />
                 );
               })}
@@ -118,7 +118,7 @@ export const DateCell: React.FC<Props> = memo(
                   onClose={closeAddSchedulePopover}
                   popoverOpenDate={date}
                   schedule={null}
-                  addSchedule={addSchedule}
+                  onRequestAddSchedule={onRequestAddSchedule}
                 >
                   <Text
                     ref={creatingScheduleRef}

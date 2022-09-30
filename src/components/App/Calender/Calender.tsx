@@ -19,11 +19,11 @@ type Props = {
   };
   scheduleList: Schedule[];
   // 予定の追加処理
-  addSchedule: (newSchedule: Omit<Schedule, "id">) => void;
+  onRequestAddSchedule: (newSchedule: Omit<Schedule, "id">) => void;
   // 予定の削除処理
-  deleateSchedule: (targetId: number) => void;
+  onRequestDeleateSchedule: (targetId: number) => void;
   // 予定の更新処理
-  updateSchedule: (newSchedule: Schedule) => void;
+  onRequestUpdateSchedule: (newSchedule: Schedule) => void;
 };
 
 export const Calender: React.FC<Props> = memo(
@@ -31,9 +31,9 @@ export const Calender: React.FC<Props> = memo(
     systemDate,
     displayYearMonth,
     scheduleList,
-    addSchedule,
-    deleateSchedule,
-    updateSchedule,
+    onRequestAddSchedule,
+    onRequestDeleateSchedule,
+    onRequestUpdateSchedule,
   }) => {
     // 1日の曜日インデックス(日：0, 月:1, ..., 土:6)
     const firstDayIndex = useMemo<number>(() => {
@@ -210,9 +210,9 @@ export const Calender: React.FC<Props> = memo(
                               `00${date}`.slice(-2) // 日は2桁にするために頭を0埋め
                             );
                           })}
-                          addSchedule={addSchedule}
-                          deleateSchedule={deleateSchedule}
-                          updateSchedule={updateSchedule}
+                          onRequestAddSchedule={onRequestAddSchedule}
+                          onRequestDeleateSchedule={onRequestDeleateSchedule}
+                          onRequestUpdateSchedule={onRequestUpdateSchedule}
                         />
                       ) : null}
                     </Td>

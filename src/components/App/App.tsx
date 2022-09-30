@@ -84,28 +84,27 @@ export const App: React.FC = memo(() => {
   const [scheduleList, setScheduleList] = useState<Schedule[]>([]);
 
   // 予定の追加
-  const addSchedule = useCallback<(newSchedule: Omit<Schedule, "id">) => void>(
-    (newSchedule) => {
-      setScheduleList((prevScheduleList) => {
-        // idの最大値取得
-        const maxId = prevScheduleList
-          .map((prevSchedule) => prevSchedule.id)
-          .reduce((maxId, id) => Math.max(maxId, id), -Infinity);
+  const handleRequestAddSchedule = useCallback<
+    (newSchedule: Omit<Schedule, "id">) => void
+  >((newSchedule) => {
+    setScheduleList((prevScheduleList) => {
+      // idの最大値取得
+      const maxId = prevScheduleList
+        .map((prevSchedule) => prevSchedule.id)
+        .reduce((maxId, id) => Math.max(maxId, id), -Infinity);
 
-        return [
-          ...prevScheduleList,
-          {
-            id: maxId + 1,
-            ...newSchedule,
-          },
-        ];
-      });
-    },
-    []
-  );
+      return [
+        ...prevScheduleList,
+        {
+          id: maxId + 1,
+          ...newSchedule,
+        },
+      ];
+    });
+  }, []);
 
   // 予定の削除
-  const deleateSchedule = useCallback<(targetId: number) => void>(
+  const handleRequestDeleateSchedule = useCallback<(targetId: number) => void>(
     (targetId) => {
       setScheduleList((prevScheduleList) => {
         return [
@@ -119,24 +118,23 @@ export const App: React.FC = memo(() => {
   );
 
   // 予定の更新
-  const updateSchedule = useCallback<(newSchedule: Schedule) => void>(
-    (newSchedule) => {
-      setScheduleList((prevScheduleList) => {
-        const tempScheduleList = [...prevScheduleList];
-        const targetIndex = tempScheduleList.findIndex(
-          (tempSchedule) => tempSchedule.id === newSchedule.id
-        );
+  const handleRequestUpdateSchedule = useCallback<
+    (newSchedule: Schedule) => void
+  >((newSchedule) => {
+    setScheduleList((prevScheduleList) => {
+      const tempScheduleList = [...prevScheduleList];
+      const targetIndex = tempScheduleList.findIndex(
+        (tempSchedule) => tempSchedule.id === newSchedule.id
+      );
 
-        if (targetIndex !== -1) {
-          // 該当予定を上書き
-          tempScheduleList[targetIndex] = newSchedule;
-        }
+      if (targetIndex !== -1) {
+        // 該当予定を上書き
+        tempScheduleList[targetIndex] = newSchedule;
+      }
 
-        return [...tempScheduleList];
-      });
-    },
-    []
-  );
+      return [...tempScheduleList];
+    });
+  }, []);
 
   return (
     <Center
@@ -244,9 +242,9 @@ export const App: React.FC = memo(() => {
             const month = `00${displayYearMonth.month}`.slice(-2);
             return schedule.date.startsWith(`${year}-${month}`);
           })}
-          addSchedule={addSchedule}
-          deleateSchedule={deleateSchedule}
-          updateSchedule={updateSchedule}
+          onRequestAddSchedule={handleRequestAddSchedule}
+          onRequestDeleateSchedule={handleRequestDeleateSchedule}
+          onRequestUpdateSchedule={handleRequestUpdateSchedule}
         />
       </VStack>
     </Center>

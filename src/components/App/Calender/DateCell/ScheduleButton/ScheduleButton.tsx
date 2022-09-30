@@ -11,13 +11,13 @@ import { InputSchedulePopover } from "~/components/App/Calender/DateCell/InputSc
 type Props = {
   schedule: Schedule;
   // 予定の削除処理
-  deleateSchedule: (targetId: number) => void;
+  onRequestDeleateSchedule: (targetId: number) => void;
   // 予定の更新処理
-  updateSchedule: (newSchedule: Schedule) => void;
+  onRequestUpdateSchedule: (newSchedule: Schedule) => void;
 };
 
 export const ScheduleButton: React.FC<Props> = memo(
-  ({ schedule, deleateSchedule, updateSchedule }) => {
+  ({ schedule, onRequestDeleateSchedule, onRequestUpdateSchedule }) => {
     // 予定詳細ポップオーバーの表示状態
     const {
       isOpen: isOpenScheduleDetailPopover,
@@ -60,7 +60,7 @@ export const ScheduleButton: React.FC<Props> = memo(
             onClose={closeScheduleDetailPopover}
             schedule={schedule}
             onClickEditBitton={handleClickEditButton}
-            deleateSchedule={deleateSchedule}
+            onRequestDeleateSchedule={onRequestDeleateSchedule}
           >
             <Button
               onClick={openScheduleDetailPopover}
@@ -92,8 +92,8 @@ export const ScheduleButton: React.FC<Props> = memo(
             isOpen={isOpenEditSchedulePopover}
             onClose={handleCloseEditSchedulePopover}
             schedule={schedule}
-            deleateSchedule={deleateSchedule}
-            updateSchedule={updateSchedule}
+            onRequestDeleateSchedule={onRequestDeleateSchedule}
+            onRequestUpdateSchedule={onRequestUpdateSchedule}
           >
             <Text
               sx={{

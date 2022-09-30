@@ -39,7 +39,7 @@ type Props = {
   // 編集ボタン押下時
   onClickEditBitton: () => void;
   // 予定の削除処理
-  deleateSchedule: (targetId: number) => void;
+  onRequestDeleateSchedule: (targetId: number) => void;
 };
 
 export const ScheduleDetailPopover: React.FC<Props> = memo(
@@ -49,7 +49,7 @@ export const ScheduleDetailPopover: React.FC<Props> = memo(
     children,
     schedule,
     onClickEditBitton,
-    deleateSchedule,
+    onRequestDeleateSchedule,
   }) => {
     // タイトル
     const title = useMemo<string>(() => {
@@ -118,12 +118,17 @@ export const ScheduleDetailPopover: React.FC<Props> = memo(
         }
 
         // 予定を削除
-        deleateSchedule(schedule.id);
+        onRequestDeleateSchedule(schedule.id);
 
         // ポップオーバーを閉じる
         handleClickCloseButton();
       },
-      [closeConfirmModal, deleateSchedule, handleClickCloseButton, schedule]
+      [
+        closeConfirmModal,
+        handleClickCloseButton,
+        onRequestDeleateSchedule,
+        schedule,
+      ]
     );
 
     return (
