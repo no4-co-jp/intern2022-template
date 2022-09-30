@@ -10,7 +10,7 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
-import type { Schedule } from "~/App";
+import type { Schedule } from "~/components/App";
 import { InputSchedulePopover } from "./InputSchedulePopover";
 import { ScheduleButton } from "./ScheduleButton";
 

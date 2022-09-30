@@ -3,9 +3,9 @@
  */
 import React, { useCallback } from "react";
 import { Text, useDisclosure, Button } from "@chakra-ui/react";
-import type { Schedule } from "~/App";
+import type { Schedule } from "~/components/App";
 import { ScheduleDetailPopover } from "./ScheduleDetailPopover";
-import { InputSchedulePopover } from "../InputSchedulePopover";
+import { InputSchedulePopover } from "~/components/App/Calender/DateCell/InputSchedulePopover";
 
 type Props = {
   schedule: Schedule;

@@ -4,7 +4,7 @@
 import React, { useMemo } from "react";
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { DateCell } from "./DateCell";
-import type { Schedule } from "~/App";
+import type { Schedule } from "~/components/App";
 
 type Props = {
   systemDate: {

@@ -18,7 +18,7 @@ import {
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
-import type { Schedule } from "~/App";
+import type { Schedule } from "~/components/App";
 import {
   BiCalendarEvent,
   BiEditAlt,
@@ -28,7 +28,7 @@ import {
   BiTrash,
   BiX,
 } from "react-icons/bi";
-import { ConfirmModal } from "~/Common/ConfirmModal";
+import { ConfirmModal } from "~/components/Common/ConfirmModal";
 
 type Props = {
   isOpen: boolean;

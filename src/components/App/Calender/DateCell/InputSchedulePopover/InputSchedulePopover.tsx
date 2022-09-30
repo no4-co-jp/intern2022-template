@@ -21,9 +21,9 @@ import {
   useDisclosure,
   FormErrorMessage,
 } from "@chakra-ui/react";
-import type { Schedule } from "~/App";
+import type { Schedule } from "~/components/App";
 import { BiSave, BiTrash, BiX } from "react-icons/bi";
-import { ConfirmModal } from "~/Common/ConfirmModal";
+import { ConfirmModal } from "~/components/Common/ConfirmModal";
 
 type Props = {
   isOpen: boolean;
