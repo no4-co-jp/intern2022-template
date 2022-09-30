@@ -1,7 +1,8 @@
 /**
  * カレンダーアプリ
  */
-import React, { useCallback, useMemo, useState } from "react";
+import type React from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import {
   Center,
   Flex,
@@ -24,9 +25,13 @@ export type Schedule = {
   memo: string; // メモ
 };
 
-export const App: React.FC = React.memo(() => {
+export const App: React.FC = memo(() => {
   // 現在日
-  const systemDate = useMemo(() => {
+  const systemDate = useMemo<{
+    year: number;
+    month: number;
+    date: number;
+  }>(() => {
     const date = new Date();
     return {
       year: date.getFullYear(),
@@ -42,7 +47,7 @@ export const App: React.FC = React.memo(() => {
   }>({ year: systemDate.year, month: systemDate.month });
 
   // "<"ボタン押下時
-  const handleClickPreviousMonthButton = useCallback(() => {
+  const handleClickPreviousMonthButton = useCallback<() => void>(() => {
     // 表示月を前の月にする
     setDisplayYearMonth((prevDisplayYearMonth) => {
       return {
@@ -59,7 +64,7 @@ export const App: React.FC = React.memo(() => {
   }, []);
 
   // ">"ボタン押下時
-  const handleClickNextMonthButton = useCallback(() => {
+  const handleClickNextMonthButton = useCallback<() => void>(() => {
     // 表示月を次の月にする
     setDisplayYearMonth((prevDisplayYearMonth) => {
       return {
@@ -76,102 +81,62 @@ export const App: React.FC = React.memo(() => {
   }, []);
 
   // 登録済み予定リスト
-  const [scheduleList, setScheduleList] = useState<Schedule[]>([
-    {
-      id: 1,
-      title: "予定1",
-      date: "2022-09-11",
-      startTime: "",
-      endTime: "",
-      memo: "テストテストテストテストテストテストテストテストテストテストテストテストテスト",
-    },
-    {
-      id: 2,
-      title: "予定2",
-      date: "2022-09-11",
-      startTime: "",
-      endTime: "",
-      memo: "",
-    },
-    {
-      id: 3,
-      title: "予定3",
-      date: "2022-09-11",
-      startTime: "",
-      endTime: "",
-      memo: "",
-    },
-    {
-      id: 4,
-      title: "予定4",
-      date: "2022-09-11",
-      startTime: "",
-      endTime: "",
-      memo: "",
-    },
-    {
-      id: 5,
-      title: "予定5",
-      date: "2022-09-12",
-      startTime: "",
-      endTime: "",
-      memo: "",
-    },
-    {
-      id: 6,
-      title: "予定6",
-      date: "2022-09-12",
-      startTime: "",
-      endTime: "",
-      memo: "",
-    },
-  ]);
+  const [scheduleList, setScheduleList] = useState<Schedule[]>([]);
 
   // 予定の追加
-  const addSchedule = useCallback((newSchedule: Omit<Schedule, "id">) => {
-    setScheduleList((prevScheduleList) => {
-      // idの最大値取得
-      const maxId = prevScheduleList
-        .map((prevSchedule) => prevSchedule.id)
-        .reduce((maxId, id) => Math.max(maxId, id), -Infinity);
+  const addSchedule = useCallback<(newSchedule: Omit<Schedule, "id">) => void>(
+    (newSchedule) => {
+      setScheduleList((prevScheduleList) => {
+        // idの最大値取得
+        const maxId = prevScheduleList
+          .map((prevSchedule) => prevSchedule.id)
+          .reduce((maxId, id) => Math.max(maxId, id), -Infinity);
 
-      return [
-        ...prevScheduleList,
-        {
-          id: maxId + 1,
-          ...newSchedule,
-        },
-      ];
-    });
-  }, []);
+        return [
+          ...prevScheduleList,
+          {
+            id: maxId + 1,
+            ...newSchedule,
+          },
+        ];
+      });
+    },
+    []
+  );
 
   // 予定の削除
-  const deleateSchedule = useCallback((targetId: number) => {
-    setScheduleList((prevScheduleList) => {
-      return [
-        ...prevScheduleList.filter(
-          (prevSchedule) => prevSchedule.id !== targetId
-        ),
-      ];
-    });
-  }, []);
+  const deleateSchedule = useCallback<(targetId: number) => void>(
+    (targetId) => {
+      setScheduleList((prevScheduleList) => {
+        return [
+          ...prevScheduleList.filter(
+            (prevSchedule) => prevSchedule.id !== targetId
+          ),
+        ];
+      });
+    },
+    []
+  );
 
   // 予定の更新
-  const updateSchedule = useCallback((newSchedule: Schedule) => {
-    setScheduleList((prevScheduleList) => {
-      const tempScheduleList = [...prevScheduleList];
-      const targetIndex = tempScheduleList.findIndex(
-        (tempSchedule) => tempSchedule.id === newSchedule.id
-      );
+  const updateSchedule = useCallback<(newSchedule: Schedule) => void>(
+    (newSchedule) => {
+      setScheduleList((prevScheduleList) => {
+        const tempScheduleList = [...prevScheduleList];
+        const targetIndex = tempScheduleList.findIndex(
+          (tempSchedule) => tempSchedule.id === newSchedule.id
+        );
 
-      if (targetIndex !== -1) {
-        // 該当予定を上書き
-        tempScheduleList[targetIndex] = newSchedule;
-      }
+        if (targetIndex !== -1) {
+          // 該当予定を上書き
+          tempScheduleList[targetIndex] = newSchedule;
+        }
 
-      return [...tempScheduleList];
-    });
-  }, []);
+        return [...tempScheduleList];
+      });
+    },
+    []
+  );
 
   return (
     <Center

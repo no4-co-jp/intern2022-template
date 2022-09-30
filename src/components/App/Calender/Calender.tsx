@@ -1,7 +1,8 @@
 /**
  * カレンダー - 月
  */
-import React, { useMemo } from "react";
+import type React from "react";
+import { memo, useMemo } from "react";
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { DateCell } from "./DateCell";
 import type { Schedule } from "~/components/App";
@@ -25,7 +26,7 @@ type Props = {
   updateSchedule: (newSchedule: Schedule) => void;
 };
 
-export const Calender: React.FC<Props> = React.memo(
+export const Calender: React.FC<Props> = memo(
   ({
     systemDate,
     displayYearMonth,
@@ -35,7 +36,7 @@ export const Calender: React.FC<Props> = React.memo(
     updateSchedule,
   }) => {
     // 1日の曜日インデックス(日：0, 月:1, ..., 土:6)
-    const firstDayIndex = useMemo(() => {
+    const firstDayIndex = useMemo<number>(() => {
       const date = new Date(
         displayYearMonth.year,
         displayYearMonth.month - 1,
@@ -45,12 +46,12 @@ export const Calender: React.FC<Props> = React.memo(
     }, [displayYearMonth]);
 
     // 月末最終日の日付
-    const lastDateNumber = useMemo(() => {
+    const lastDateNumber = useMemo<number>(() => {
       const date = new Date(displayYearMonth.year, displayYearMonth.month, 0); // 翌月の0日を指定
       return date.getDate();
     }, [displayYearMonth]);
 
-    const weekList: (null | number)[][] = useMemo(() => {
+    const weekList = useMemo<(null | number)[][]>(() => {
       const list = [
         // 日曜日から1日までをnull埋め
         ...Array(firstDayIndex)

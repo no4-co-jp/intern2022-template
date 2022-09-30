@@ -1,7 +1,8 @@
 /**
  * 確認モーダル
  */
-import React, { useCallback } from "react";
+import type React from "react";
+import { memo, useCallback } from "react";
 import {
   Button,
   Flex,
@@ -21,7 +22,7 @@ type Props = {
   negativeButtonLabel?: string;
 };
 
-export const ConfirmModal: React.FC<Props> = React.memo(
+export const ConfirmModal: React.FC<Props> = memo(
   ({
     isOpen,
     onClose,
@@ -29,11 +30,11 @@ export const ConfirmModal: React.FC<Props> = React.memo(
     positiveButtonLabel = "OK",
     negativeButtonLabel = "キャンセル",
   }) => {
-    const handleClickPositiveButton = useCallback(() => {
+    const handleClickPositiveButton = useCallback<() => void>(() => {
       onClose(true);
     }, [onClose]);
 
-    const handleClickNegativeButton = useCallback(() => {
+    const handleClickNegativeButton = useCallback<() => void>(() => {
       onClose(false);
     }, [onClose]);
 

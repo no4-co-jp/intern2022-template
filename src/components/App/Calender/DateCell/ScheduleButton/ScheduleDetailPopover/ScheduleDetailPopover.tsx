@@ -1,7 +1,8 @@
 /**
  * 予定詳細ポップオーバー
  */
-import React, { useCallback, useMemo } from "react";
+import type React from "react";
+import { memo, useCallback, useMemo } from "react";
 import {
   Box,
   Text,
@@ -41,7 +42,7 @@ type Props = {
   deleateSchedule: (targetId: number) => void;
 };
 
-export const ScheduleDetailPopover: React.FC<Props> = React.memo(
+export const ScheduleDetailPopover: React.FC<Props> = memo(
   ({
     isOpen,
     onClose,
@@ -51,27 +52,27 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
     deleateSchedule,
   }) => {
     // タイトル
-    const title = useMemo(() => {
+    const title = useMemo<string>(() => {
       return schedule.title;
     }, [schedule]);
 
     // 日付 yyyy/mm/dd形式
-    const date = useMemo(() => {
+    const date = useMemo<string>(() => {
       return schedule.date.replaceAll("-", "/");
     }, [schedule]);
 
     // 開始時刻 hh:MM形式
-    const startTime = useMemo(() => {
+    const startTime = useMemo<string>(() => {
       return schedule.startTime === "" ? "--:--" : schedule.startTime;
     }, [schedule]);
 
     // 終了時刻 hh:MM形式
-    const endTime = useMemo(() => {
+    const endTime = useMemo<string>(() => {
       return schedule.endTime === "" ? "--:--" : schedule.endTime;
     }, [schedule]);
 
     // メモ
-    const memo = useMemo(() => {
+    const memo = useMemo<string>(() => {
       return schedule.memo;
     }, [schedule]);
 
@@ -83,31 +84,31 @@ export const ScheduleDetailPopover: React.FC<Props> = React.memo(
     } = useDisclosure();
 
     // 閉じるボタン押下時
-    const handleClickCloseButton = useCallback(() => {
+    const handleClickCloseButton = useCallback<() => void>(() => {
       // ポップオーバーを閉じる
       onClose();
     }, [onClose]);
 
     // 編集ボタン押下時
-    const handleClickEditButton = useCallback(() => {
+    const handleClickEditButton = useCallback<() => void>(() => {
       onClickEditBitton();
     }, [onClickEditBitton]);
 
     // 削除ボタン押下時
-    const handleClickDeleateButton = useCallback(() => {
+    const handleClickDeleateButton = useCallback<() => void>(() => {
       // 削除確認モーダルを開く
       openConfirmModal();
     }, [openConfirmModal]);
 
     // ポップオーバー領域外クリック時
-    const handleClickOutsidePopover = useCallback(() => {
+    const handleClickOutsidePopover = useCallback<() => void>(() => {
       // ポップオーバーを閉じる
       handleClickCloseButton();
     }, [handleClickCloseButton]);
 
     // 削除確認モーダルのclose時
-    const handleCloseConfirmModal = useCallback(
-      (isOk: boolean) => {
+    const handleCloseConfirmModal = useCallback<(isOk: boolean) => void>(
+      (isOk) => {
         // 削除確認モーダルを閉じる
         closeConfirmModal();
 

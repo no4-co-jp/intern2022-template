@@ -1,7 +1,8 @@
 /**
  * 登録済み予定ボタン
  */
-import React, { useCallback } from "react";
+import type React from "react";
+import { memo, useCallback } from "react";
 import { Text, useDisclosure, Button } from "@chakra-ui/react";
 import type { Schedule } from "~/components/App";
 import { ScheduleDetailPopover } from "./ScheduleDetailPopover";
@@ -15,7 +16,7 @@ type Props = {
   updateSchedule: (newSchedule: Schedule) => void;
 };
 
-export const ScheduleButton: React.FC<Props> = React.memo(
+export const ScheduleButton: React.FC<Props> = memo(
   ({ schedule, deleateSchedule, updateSchedule }) => {
     // 予定詳細ポップオーバーの表示状態
     const {
@@ -32,7 +33,7 @@ export const ScheduleButton: React.FC<Props> = React.memo(
     } = useDisclosure();
 
     // 予定詳細ポップオーバー - 編集ボタン押下時
-    const handleClickEditButton = useCallback(() => {
+    const handleClickEditButton = useCallback<() => void>(() => {
       // 予定詳細ポップオーバーを閉じる
       closeScheduleDetailPopover();
 
@@ -41,7 +42,7 @@ export const ScheduleButton: React.FC<Props> = React.memo(
     }, [closeScheduleDetailPopover, openEditSchedulePopover]);
 
     // 予定編集ポップオーバー - 閉じるボタン押下時
-    const handleCloseEditSchedulePopover = useCallback(() => {
+    const handleCloseEditSchedulePopover = useCallback<() => void>(() => {
       // 予定編集ポップオーバーを閉じる
       closeEditSchedulePopover();
 

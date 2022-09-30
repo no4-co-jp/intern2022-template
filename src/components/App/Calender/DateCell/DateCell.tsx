@@ -1,7 +1,8 @@
 /**
  * カレンダー - 日
  */
-import React, { useEffect, useRef } from "react";
+import type React from "react";
+import { memo, useEffect, useRef } from "react";
 import {
   Box,
   Text,
@@ -30,7 +31,7 @@ type Props = {
   updateSchedule: (newSchedule: Schedule) => void;
 };
 
-export const DateCell: React.FC<Props> = React.memo(
+export const DateCell: React.FC<Props> = memo(
   ({
     date,
     isToday,

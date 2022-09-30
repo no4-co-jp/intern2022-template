@@ -1,7 +1,8 @@
 /**
  * 予定入力ポップオーバー (作成, 編集)
  */
-import React, { useCallback, useMemo, useState } from "react";
+import type React from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import {
   Box,
   Text,
@@ -44,7 +45,7 @@ type Props = {
   updateSchedule?: (newSchedule: Schedule) => void;
 };
 
-export const InputSchedulePopover: React.FC<Props> = React.memo(
+export const InputSchedulePopover: React.FC<Props> = memo(
   ({
     isOpen,
     onClose,
@@ -56,7 +57,7 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     updateSchedule,
   }) => {
     // 新規作成か
-    const isAddNewSchedule = useMemo(() => {
+    const isAddNewSchedule = useMemo<boolean>(() => {
       return !schedule;
     }, [schedule]);
 
@@ -112,54 +113,49 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     >("closeButton");
 
     // タイトル編集時
-    const handleChangeTitle = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTitle(event.target.value);
-      },
-      []
-    );
+    const handleChangeTitle = useCallback<
+      (event: React.ChangeEvent<HTMLInputElement>) => void
+    >((event) => {
+      setTitle(event.target.value);
+    }, []);
 
     // 日付編集時
-    const handleChangeDate = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDate(event.target.value);
-      },
-      []
-    );
+    const handleChangeDate = useCallback<
+      (event: React.ChangeEvent<HTMLInputElement>) => void
+    >((event) => {
+      setDate(event.target.value);
+    }, []);
 
     // 開始時刻編集時
-    const handleChangeStartTime = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setStartTime(event.target.value);
-      },
-      []
-    );
+    const handleChangeStartTime = useCallback<
+      (event: React.ChangeEvent<HTMLInputElement>) => void
+    >((event) => {
+      setStartTime(event.target.value);
+    }, []);
 
     // 終了時刻編集時
-    const handleChangeEndTime = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEndTime(event.target.value);
-      },
-      []
-    );
+    const handleChangeEndTime = useCallback<
+      (event: React.ChangeEvent<HTMLInputElement>) => void
+    >((event) => {
+      setEndTime(event.target.value);
+    }, []);
 
     // メモ編集時
-    const handleChangeMemo = useCallback(
-      (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setMemo(event.target.value);
-      },
-      []
-    );
+    const handleChangeMemo = useCallback<
+      (event: React.ChangeEvent<HTMLTextAreaElement>) => void
+    >((event) => {
+      setMemo(event.target.value);
+    }, []);
 
     // 閉じるボタン押下時
-    const handleClickCloseButton = useCallback(() => {
+    const handleClickCloseButton = useCallback<() => void>(() => {
       // 入力内容破棄/編集内容破棄モーダルを開く
       setConfirmModalOpenTrigger("closeButton");
       openConfirmModal();
     }, [openConfirmModal]);
 
     // 保存ボタン押下時
-    const handleClickSaveButton = useCallback(() => {
+    const handleClickSaveButton = useCallback<() => void>(() => {
       if (!updateSchedule || !schedule) {
         return;
       }
@@ -203,14 +199,14 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     ]);
 
     // 削除ボタン押下時
-    const handleClickDeleateButton = useCallback(() => {
+    const handleClickDeleateButton = useCallback<() => void>(() => {
       // 削除確認モーダルを開く
       setConfirmModalOpenTrigger("deleateButton");
       openConfirmModal();
     }, [openConfirmModal]);
 
     // ポップオーバー領域外クリック時
-    const handleClickOutsidePopover = useCallback(() => {
+    const handleClickOutsidePopover = useCallback<() => void>(() => {
       if (isAddNewSchedule) {
         // 新規作成時
         if (!addSchedule) {
@@ -261,8 +257,8 @@ export const InputSchedulePopover: React.FC<Props> = React.memo(
     ]);
 
     // 入力内容破棄/編集内容破棄/削除確認モーダルのclose時
-    const handleCloseConfirmModal = useCallback(
-      (isOk: boolean) => {
+    const handleCloseConfirmModal = useCallback<(isOk: boolean) => void>(
+      (isOk) => {
         // 入力内容破棄/編集内容破棄/削除確認モーダルを閉じる
         closeConfirmModal();
 
